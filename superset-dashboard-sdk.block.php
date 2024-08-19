@@ -19,19 +19,53 @@ function sds_enqueue_block_editor_assets()
 		plugins_url('block.js', __FILE__),
 		array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n')
 	);
+	wp_enqueue_style('sds-dashboard-block-editor-style', plugins_url('block-editor.css', __FILE__));
+}
+
+function sds_get_boolean_attribute($attributes, $attribute, $default = true)
+{
+	$b = isset($attributes[$attribute]) && $attributes[$attribute] === true ? true : $default;
+	return $b;
 }
 
 function sds_render_dashboard($attributes)
 {
-	$dashboard_id = $attributes['dashboardId'];
-	// $custom_parameters = $attributes['customParameters'];
+	$dashboard_id = isset($attributes['dashboardId']) ? $attributes['dashboardId'] : '';
+	$autosize = sds_get_boolean_attribute($attributes, 'autosize', false);
+	$hide_title = sds_get_boolean_attribute($attributes, 'hideTitle', false);
+	$hide_tabs = sds_get_boolean_attribute($attributes, 'hideTabs', false);
+	$hide_chart_controls = sds_get_boolean_attribute($attributes, 'hideChartControls', false);
+	$placeholder = isset($attributes['placeholder']) ? $attributes['placeholder'] : 'Loading...';
+	$url_params = isset($attributes['urlParams']) ? $attributes['urlParams'] : [];
+	$url_params = array_reduce($url_params, function ($acc, $item) {
+		if (empty($item['key']) || empty($item['value'])) {
+			return $acc;
+		}
+		return array_merge($acc, [$item['key'] => $item['value']]);
+	}, []);
+	$uiConfig = json_encode([
+		"hideTitle" => $hide_title,
+		"hideTabs" => $hide_tabs,
+		"hideChartControls" => $hide_chart_controls,
+		"urlParams" => $url_params
+	]);
 
 	$username = get_option('sds_settings')['username'];
 	$password = get_option('sds_settings')['password'];
 	$endpoint = get_option('sds_settings')['endpoint'];
 
-	$template = "<div class='sds-dashboard-container' id='sds-dashboard-{$dashboard_id}'>Loading...</div>";
-	$template .= "<script type='text/javascript'>SDS.render('sds-dashboard-{$dashboard_id}', '{$endpoint}', '{$username}', '{$password}', '{$dashboard_id}', true);</script>";
+	$template = "<div class='sds-dashboard-container' id='sds-dashboard-{$dashboard_id}'>{$placeholder}</div>";
+	$function = "SDS.render(
+		'sds-dashboard-{$dashboard_id}',
+		'{$endpoint}',
+		'{$username}',
+		'{$password}',
+		'{$dashboard_id}',
+		'{$placeholder}',
+		{$autosize},
+		{$uiConfig})";
 
-	return $template;
+	return $template . "<script type='text/javascript' language='javascript'>{$function}
+		// " . json_encode($attributes) . "
+	</script>";
 }

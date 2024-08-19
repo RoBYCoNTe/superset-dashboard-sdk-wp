@@ -1141,7 +1141,7 @@ var SDS = (function (exports, React, ReactDOM) {
     };
 
     var Dashboard = function (_a) {
-        var uuid = _a.uuid, domain = _a.domain, dataProvider = _a.dataProvider, guestToken = _a.guestToken, nativeFilters = _a.nativeFilters, _b = _a.autosize, autosize = _b === void 0 ? false : _b, _c = _a.loadingPlaceholder, loadingPlaceholder = _c === void 0 ? false : _c, _d = _a.uiConfig, uiConfig = _d === void 0 ? {
+        var uuid = _a.uuid, domain = _a.domain, dataProvider = _a.dataProvider, guestToken = _a.guestToken, nativeFilters = _a.nativeFilters, _b = _a.autosize, autosize = _b === void 0 ? false : _b, _c = _a.placeholder, placeholder = _c === void 0 ? false : _c, _d = _a.uiConfig, uiConfig = _d === void 0 ? {
             hideTitle: true,
         } : _d;
         var ref = React.useRef(null);
@@ -1230,13 +1230,13 @@ var SDS = (function (exports, React, ReactDOM) {
             }); })();
         }, [ref.current, uuid]);
         return (React__default.createElement(React__default.Fragment, null,
-            loadingPlaceholder !== false && loading === true && (React__default.createElement("div", { style: {
+            placeholder !== false && loading === true && (React__default.createElement("div", { style: {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     height: "100%",
                     width: "100%",
-                } }, loadingPlaceholder)),
+                } }, placeholder)),
             React__default.createElement("div", { className: "superset-dashboard", ref: ref, style: { height: 0 } })));
     };
 
@@ -1459,16 +1459,16 @@ var SDS = (function (exports, React, ReactDOM) {
         return DataProvider;
     }());
 
-    function render(inElementId, endpoint, username, password, dashboardUuid, autosize) {
+    function render(elementId, endpoint, username, password, dashboardUuid, placeholder, autosize, uiConfig) {
         if (autosize === void 0) { autosize = false; }
-        var element = document.getElementById(inElementId);
+        var element = document.getElementById(elementId);
         if (!element) {
-            console.error("Element with id " + inElementId + " not found");
+            console.error("Element with id " + elementId + " not found");
             return;
         }
         var dataProvider = new DataProvider(endpoint, { username: username, password: password });
         ReactDOM.render(React__default.createElement(React__default.StrictMode, null,
-            React__default.createElement(Dashboard, { loadingPlaceholder: "Loading...", autosize: autosize, domain: endpoint, dataProvider: dataProvider, uuid: dashboardUuid })), document.getElementById(inElementId));
+            React__default.createElement(Dashboard, { placeholder: placeholder, autosize: autosize, domain: endpoint, dataProvider: dataProvider, uuid: dashboardUuid, uiConfig: uiConfig })), document.getElementById(elementId));
     }
 
     exports.Dashboard = Dashboard;

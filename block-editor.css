@@ -1,0 +1,34 @@
+.sds-url-params {
+	display: flex;
+	flex-direction: column;
+}
+.sds-url-param,
+.sds-url-param-headers {
+	display: flex;
+	flex-direction: row;
+}
+.sds-add-url-param {
+	display: flex;
+	flex-direction: row;
+	align-self: flex-start;
+	margin-top: 8px;
+}
+.sds-url-param > :first-child {
+	margin-right: 10px;
+}
+.sds-url-param > .components-base-control {
+	margin-bottom: 0px !important;
+}
+.sds-url-param > button {
+	align-self: flex-end;
+	margin-bottom: 8px;
+}
+.sds-url-param:not(:first-child) {
+	margin-top: -16px;
+}
+.sds-url-param:not(:first-child) label {
+	height: 0px !important;
+	visibility: hidden;
+	margin: 0;
+	padding: 0
+}

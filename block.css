@@ -2,10 +2,7 @@
 	padding: 20px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
-}
-
-.sds-dashboard-block h3 {
-	margin-top: 0;
+	cursor: pointer;
 }
 
 .sds-dashboard-container {
