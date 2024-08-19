@@ -1,0 +1,7 @@
+# I need a gitignore for wordpress plugin, please list all ignorable files below:
+.DS_Store
+Thumbs.db
+node_modules
+npm-debug.log
+composer.lock
+vendor
