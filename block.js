@@ -54,79 +54,129 @@
     );
   }
 
-  function UrlParameters(props) {
-    const urlParams = props.attributes.urlParams || [];
-    const addUrlParam = () => {
-      const newUrlParams = [...urlParams, { key: "", value: "" }];
-      props.setAttributes({ urlParams: newUrlParams });
+  function ArrayControl(title, description, source, props, columns = ["key", "value"], elements = undefined) {
+    const array = props.attributes[source] || [];
+    const adKvItem = () => {
+      const newArray = [...array, columns.reduce((acc, column) => ({ ...acc, [column]: "" }), {})];
+      props.setAttributes({ [source]: newArray });
     };
 
-    const updateUrlParam = (index, key, value) => {
-      const newUrlParams = [...urlParams];
-      newUrlParams[index] = { key, value };
-      props.setAttributes({ urlParams: newUrlParams });
+    const updateKvItem = (index, column, value) => {
+      const newArray = [...array];
+      const newItem = { ...newArray[index], [column]: value };
+      newArray[index] = newItem;
+      props.setAttributes({ [source]: newArray });
     };
 
-    const removeUrlParam = (e, index) => {
-      const newUrlParams = urlParams.filter((_, i) => i !== index);
-      props.setAttributes({ urlParams: newUrlParams });
+    const removeKvItem = (e, index) => {
+      const newArray = array.filter((_, i) => i !== index);
+      props.setAttributes({ [source]: newArray });
       e.target.blur();
     };
+
     return el(
       PanelBody,
       {
-        title: __("URL Parameters", "dashboard-editor"),
+        title,
       },
-      el(
-        "p",
-        { className: "description" },
-        __(
-          "Add URL parameters to the dashboard. These will be passed to the dashboard as query parameters.",
-          "dashboard-editor"
-        )
-      ),
+      el("p", { className: "description" }, description),
       el("hr"),
       el(
         "div",
-        { className: "sds-url-params" },
-        urlParams.map((param, index) =>
+        { className: "sds-array" },
+        array.map((item, index) =>
           el(
             "div",
-            { key: index, className: "sds-url-param" },
-            el(TextControl, {
-              label: __("Key", "text-domain"),
-              value: param.key,
-              onChange: (value) => updateUrlParam(index, value, param.value),
-            }),
-            el(
-              "div",
-              {},
+            { key: index, className: columns.length > 2 ? "sds-array-grid" : "sds-array-item" },
+            columns.map((column, i) =>
               el(TextControl, {
-                label: __("Value", "text-domain"),
-                value: param.value,
-                onChange: (value) => updateUrlParam(index, param.key, value),
+                key: i,
+                label: column,
+                value: item[column],
+                onChange: (value) => updateKvItem(index, column, value),
               })
             ),
             el(
               Button,
               {
                 isDestructive: true,
-                onClick: (e) => removeUrlParam(e, index),
+                variant: columns.length > 2 ? "secondary" : "text",
+                onClick: (e) => removeKvItem(e, index),
               },
               __("Remove", "text-domain")
-            )
+            ),
+            columns.length > 2 && el("hr")
           )
         ),
         el(
           Button,
           {
             isPrimary: true,
-            onClick: addUrlParam,
-            className: "sds-add-url-param",
+            onClick: adKvItem,
+            className: "sds-add-array-item",
           },
-          __("Add Parameter", "text-domain")
+          __("Add", "text-domain")
         )
+      ),
+      elements
+    );
+  }
+
+  function UrlParamsConfig(props) {
+    return ArrayControl(
+      __("URL Parameters", "dashboard-editor"),
+      __("Add URL parameters to the dashboard", "dashboard-editor"),
+      "urlParams",
+      props
+    );
+  }
+
+  function FiltersConfig(props) {
+    return ArrayControl(
+      __("Filters", "dashboard-editor"),
+      __("Add filters to the dashboard", "dashboard-editor"),
+      "filters",
+      props,
+      ["key", "value"],
+      el(
+        "div",
+        {},
+        el("hr"),
+        el(CheckboxControl, {
+          label: __("Visible", "dashboard-editor"),
+          help: __("Show the filters in the dashboard", "dashboard-editor"),
+          checked: props.attributes.filtersVisible,
+          onChange: function (value) {
+            props.setAttributes({ filtersVisible: value });
+          },
+        }),
+        el(CheckboxControl, {
+          label: __("Expanded", "dashboard-editor"),
+          help: __("Expand the filters in the dashboard", "dashboard-editor"),
+          checked: props.attributes.filtersExpanded,
+          onChange: function (value) {
+            props.setAttributes({ filtersExpanded: value });
+          },
+        }),
+        el(TextControl, {
+          label: __("Native Filters", "dashboard-editor"),
+          help: __("Add native filters to the dashboard", "dashboard-editor"),
+          value: props.attributes.filtersNativeFilters,
+          onChange: function (value) {
+            props.setAttributes({ filtersNativeFilters: value });
+          },
+        })
       )
+    );
+  }
+
+  function NativeFiltersConfig(props) {
+    return ArrayControl(
+      __("Native Filters", "dashboard-editor"),
+      __("Add native filters to the dashboard", "dashboard-editor"),
+      "nativeFilters",
+      props,
+      ["id", "column", "operator", "value"]
     );
   }
 
@@ -155,11 +205,35 @@
         type: "array",
         default: [],
       },
+      filters: {
+        type: "array",
+        default: [],
+      },
+      filtersVisible: {
+        type: "boolean",
+      },
+      filtersExpanded: {
+        type: "boolean",
+      },
+      filtersNativeFilters: {
+        type: "string",
+      },
+      nativeFilters: {
+        type: "array",
+        default: [],
+      },
     },
     edit: function (props) {
       var dashboardId = props.attributes.dashboardId;
       return [
-        el(InspectorControls, { key: "inspector" }, BasicConfig(props), UrlParameters(props)),
+        el(
+          InspectorControls,
+          { key: "inspector" },
+          BasicConfig(props),
+          UrlParamsConfig(props),
+          FiltersConfig(props),
+          NativeFiltersConfig(props)
+        ),
         el("div", { className: props.className }, el("div", { id: "dashboard-preview" })),
         el("code", null, __("Dashboard ID: ", "dashboard-editor"), dashboardId),
       ];

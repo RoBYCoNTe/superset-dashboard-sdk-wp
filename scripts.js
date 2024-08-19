@@ -1183,7 +1183,7 @@ var SDS = (function (exports, React, ReactDOM) {
                                     supersetDomain: domain,
                                     mountPoint: ref.current,
                                     fetchGuestToken: function () { return Promise.resolve(token); },
-                                    dashboardUiConfig: __assign(__assign({}, uiConfig), { filters: __assign(__assign({}, uiConfig.filters), { native_filters: risonFilters }) }),
+                                    dashboardUiConfig: __assign(__assign({}, uiConfig), { filters: __assign(__assign({}, uiConfig.filters), { native_filters: risonFilters, show_native_filters: false }) }),
                                 }).then(function (dashboard) { return __awaiter(void 0, void 0, void 0, function () {
                                     var height, lastHeight, interval;
                                     return __generator(this, function (_a) {
@@ -1459,7 +1459,7 @@ var SDS = (function (exports, React, ReactDOM) {
         return DataProvider;
     }());
 
-    function render(elementId, endpoint, username, password, dashboardUuid, placeholder, autosize, uiConfig) {
+    function render(elementId, endpoint, username, password, uuid, placeholder, autosize, uiConfig) {
         if (autosize === void 0) { autosize = false; }
         var element = document.getElementById(elementId);
         if (!element) {
@@ -1468,7 +1468,7 @@ var SDS = (function (exports, React, ReactDOM) {
         }
         var dataProvider = new DataProvider(endpoint, { username: username, password: password });
         ReactDOM.render(React__default.createElement(React__default.StrictMode, null,
-            React__default.createElement(Dashboard, { placeholder: placeholder, autosize: autosize, domain: endpoint, dataProvider: dataProvider, uuid: dashboardUuid, uiConfig: uiConfig })), document.getElementById(elementId));
+            React__default.createElement(Dashboard, { placeholder: placeholder, autosize: autosize, domain: endpoint, dataProvider: dataProvider, uuid: uuid, uiConfig: uiConfig })), document.getElementById(elementId));
     }
 
     exports.Dashboard = Dashboard;

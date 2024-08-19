@@ -28,6 +28,18 @@ function sds_get_boolean_attribute($attributes, $attribute, $default = true)
 	return $b;
 }
 
+function sds_map_kv_list($attributes, $source)
+{
+	$source = isset($attributes[$source]) ? $attributes[$source] : [];
+	$source = array_reduce($source, function ($acc, $item) {
+		if (empty($item['key']) || empty($item['value'])) {
+			return $acc;
+		}
+		return array_merge($acc, [$item['key'] => $item['value']]);
+	}, []);
+	return $source;
+}
+
 function sds_render_dashboard($attributes)
 {
 	$dashboard_id = isset($attributes['dashboardId']) ? $attributes['dashboardId'] : '';
@@ -36,18 +48,23 @@ function sds_render_dashboard($attributes)
 	$hide_tabs = sds_get_boolean_attribute($attributes, 'hideTabs', false);
 	$hide_chart_controls = sds_get_boolean_attribute($attributes, 'hideChartControls', false);
 	$placeholder = isset($attributes['placeholder']) ? $attributes['placeholder'] : 'Loading...';
-	$url_params = isset($attributes['urlParams']) ? $attributes['urlParams'] : [];
-	$url_params = array_reduce($url_params, function ($acc, $item) {
-		if (empty($item['key']) || empty($item['value'])) {
-			return $acc;
-		}
-		return array_merge($acc, [$item['key'] => $item['value']]);
-	}, []);
+	$url_params = sds_map_kv_list($attributes, 'urlParams');
+	$filters = sds_map_kv_list($attributes, 'filters');
+	$filtersVisible = sds_get_boolean_attribute($attributes, 'filtersVisible', false);
+	$filtersExpanded = sds_get_boolean_attribute($attributes, 'filtersExpanded', false);
+	$filtersNativeFilters = isset($attributes['filtersNativeFilters']) ? $attributes['filtersNativeFilters'] : [];
+
 	$uiConfig = json_encode([
 		"hideTitle" => $hide_title,
 		"hideTabs" => $hide_tabs,
 		"hideChartControls" => $hide_chart_controls,
-		"urlParams" => $url_params
+		"urlParams" => $url_params,
+		"filters" => [
+			...$filters,
+			"visible" => $filtersVisible,
+			"expanded" => $filtersExpanded,
+			"nativeFilters" => $filtersNativeFilters
+		]
 	]);
 
 	$username = get_option('sds_settings')['username'];

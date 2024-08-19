@@ -1,34 +1,45 @@
-.sds-url-params {
+.sds-array {
 	display: flex;
 	flex-direction: column;
 }
-.sds-url-param,
-.sds-url-param-headers {
+.sds-array-item,
+.sds-array-item-headers {
 	display: flex;
 	flex-direction: row;
 }
-.sds-add-url-param {
+.sds-add-array-item {
 	display: flex;
 	flex-direction: row;
 	align-self: flex-start;
 	margin-top: 8px;
 }
-.sds-url-param > :first-child {
+.sds-array-item > :first-child {
 	margin-right: 10px;
 }
-.sds-url-param > .components-base-control {
+.sds-array-item > .components-base-control {
 	margin-bottom: 0px !important;
 }
-.sds-url-param > button {
+.sds-array-item > button {
 	align-self: flex-end;
 	margin-bottom: 8px;
 }
-.sds-url-param:not(:first-child) {
+.sds-array-item:not(:first-child) {
 	margin-top: -16px;
 }
-.sds-url-param:not(:first-child) label {
+.sds-array-item:not(:first-child) label {
 	height: 0px !important;
 	visibility: hidden;
 	margin: 0;
 	padding: 0
+}
+
+.sds-array-grid > div{
+	width: 45%;
+	margin-right: 5%;
+	display: block;
+	float: left;
+
+}
+.sds-array-grid> .components-base-control {
+	margin-bottom: 0px !important;
 }
