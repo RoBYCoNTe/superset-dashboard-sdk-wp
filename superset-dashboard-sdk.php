@@ -2,8 +2,7 @@
 /*
 Plugin Name: Superset Dashboard SDK
 Description: Plugin to integrate Superset Dashboards in WordPress easy and fast.
-Version: 1.0
-Min WP Version: 5.8
+Version: 1.0.0
 Author: Roberto Conte Rosito
 */
 
