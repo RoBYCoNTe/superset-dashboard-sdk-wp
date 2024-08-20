@@ -1183,7 +1183,7 @@ var SDS = (function (exports, React, ReactDOM) {
                                     supersetDomain: domain,
                                     mountPoint: ref.current,
                                     fetchGuestToken: function () { return Promise.resolve(token); },
-                                    dashboardUiConfig: __assign(__assign({}, uiConfig), { filters: __assign(__assign({}, uiConfig.filters), { native_filters: risonFilters, show_native_filters: false }) }),
+                                    dashboardUiConfig: __assign(__assign({}, uiConfig), { filters: __assign(__assign({}, uiConfig.filters), { native_filters: risonFilters }) }),
                                 }).then(function (dashboard) { return __awaiter(void 0, void 0, void 0, function () {
                                     var height, lastHeight, interval;
                                     return __generator(this, function (_a) {

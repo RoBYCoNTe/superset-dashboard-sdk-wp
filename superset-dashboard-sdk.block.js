@@ -38,9 +38,9 @@
       el(CheckboxControl, {
         label: __("Hide Tabs", "dashboard-editor"),
         help: __("Hide the tabs in the dashboard", "dashboard-editor"),
-        checked: props.attributes.hideTabs,
+        checked: props.attributes.hideTab,
         onChange: function (value) {
-          props.setAttributes({ hideTabs: value });
+          props.setAttributes({ hideTab: value });
         },
       }),
       el(CheckboxControl, {
@@ -195,7 +195,7 @@
       hideTitle: {
         type: "boolean",
       },
-      hideTabs: {
+      hideTab: {
         type: "boolean",
       },
       hideChartControls: {
@@ -225,6 +225,9 @@
     },
     edit: function (props) {
       var dashboardId = props.attributes.dashboardId;
+      var message = !dashboardId
+        ? __("Please enter a dashboard ID in the block settings", "dashboard-editor")
+        : __("Dashboard Preview", "dashboard-editor");
       return [
         el(
           InspectorControls,
@@ -234,8 +237,10 @@
           FiltersConfig(props),
           NativeFiltersConfig(props)
         ),
-        el("div", { className: props.className }, el("div", { id: "dashboard-preview" })),
-        el("code", null, __("Dashboard ID: ", "dashboard-editor"), dashboardId),
+        el("img", {
+          src: `https://placehold.co/640x480?text=${message}`,
+          alt: __("Dashboard", "dashboard-editor"),
+        }),
       ];
     },
     save: function (props) {
